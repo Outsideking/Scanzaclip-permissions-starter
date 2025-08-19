@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+    function hasRole(role) {
+      return isSignedIn() && role in get(/databases/$(database)/documents/users/$(uid())).data.roles;
+    }
+    function isOwner() { return isSignedIn() && "owner" in get(/databases/$(database)/documents/users/$(uid())).data.roles; }
+    function isGENAI() { return isSignedIn() && "genai" in get(/databases/$(database)/documents/users/$(uid())).data.roles; }
+
+    match /permission_requests/{reqId} {
+      allow create: if isSignedIn();
+      allow read: if isSignedIn() && (resource.data.requesterUid == uid() || hasRole("admin") || isOwner() || isGENAI());
+      allow update: if isSignedIn() && (isOwner() || hasRole("admin") || isGENAI());
+    }
+
+    match /permissions_assign/{id} {
+      allow read: if isSignedIn();
+      allow write: if isOwner() || hasRole("admin") || isGENAI();
+      allow delete: if isOwner() || hasRole("admin") || isGENAI();
+    }
+
+    match /notifications/{nid} {
+      allow create: if isSignedIn();
+      allow read: if isSignedIn() && resource.data.toUid == uid();
+      allow update: if isSignedIn() && resource.data.toUid == uid();
+    }
+
+    match /audit_logs/{id} {
+      allow read: if isOwner() || hasRole("admin") || isGENAI();
+      allow create: if isSignedIn();
+    }
+  }
+}
