@@ -1,0 +1,6 @@
+{
+  "notification_new_request": "New permission request from {{name}}: {{perms}}",
+  "approve_button": "Approve",
+  "deny_button": "Deny",
+  "ask_info_button": "Ask for info"
+}
