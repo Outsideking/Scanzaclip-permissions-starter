@@ -1,0 +1,26 @@
+{
+  "GENAI": {
+    "access": "full",
+    "bypassCheck": true
+  },
+  "FOUNDER": {
+    "access": "all",
+    "bypassCheck": false
+  },
+  "ORG_ADMIN": {
+    "access": ["approve_user", "manage_org", "assign_roles"],
+    "bypassCheck": false
+  },
+  "COMPANY_ADMIN": {
+    "access": ["manage_company", "assign_roles"],
+    "bypassCheck": false
+  },
+  "PROJECT_OWNER": {
+    "access": ["create_project", "assign_roles", "manage_project"],
+    "bypassCheck": false
+  },
+  "USER": {
+    "access": ["read", "comment"],
+    "bypassCheck": false
+  }
+}
